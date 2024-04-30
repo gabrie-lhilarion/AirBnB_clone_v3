@@ -86,3 +86,47 @@ class TestFileStorage(unittest.TestCase):
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_save(self):
         """Test that save properly saves objects to file.json"""
+
+
+class TestDBStorage(unittest.TestCase):
+    def setUp(self):
+        self.storage = DBStorage()
+
+    def tearDown(self):
+        self.storage.close()
+
+    def test_get(self):
+        test_obj = State(name="Test State")
+        self.storage.new(test_obj)
+        self.storage.save()
+        obj_id = test_obj.id
+
+        retrieved_obj = self.storage.get(State, obj_id)
+        self.assertEqual(test_obj, retrieved_obj)
+
+    def test_get_nonexistent(self):
+       
+        retrieved_obj = self.storage.get(State, "nonexistent_id")
+        self.assertIsNone(retrieved_obj)
+
+    def test_count_all(self):
+      
+        initial_count = self.storage.count()
+        test_obj1 = State(name="Test State 1")
+        test_obj2 = State(name="Test State 2")
+        self.storage.new(test_obj1)
+        self.storage.new(test_obj2)
+        self.storage.save()
+        final_count = self.storage.count()
+        self.assertEqual(final_count, initial_count + 2)
+
+    def test_count_cls(self):
+       
+        initial_count = self.storage.count(State)
+        test_obj1 = State(name="Test State 1")
+        test_obj2 = State(name="Test State 2")
+        self.storage.new(test_obj1)
+        self.storage.new(test_obj2)
+        self.storage.save()
+        final_count = self.storage.count(State)
+        self.assertEqual(final_count, initial_count + 2)

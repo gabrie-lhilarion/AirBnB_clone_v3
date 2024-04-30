@@ -113,3 +113,39 @@ class TestFileStorage(unittest.TestCase):
         with open("file.json", "r") as f:
             js = f.read()
         self.assertEqual(json.loads(string), json.loads(js))
+        
+
+class TestFileStorageUpdate(unittest.TestCase):
+    def setUp(self):
+        self.storage = FileStorage()
+        # Initialize objects for testing
+        self.state = State(name="Test State")
+        self.city = City(name="Test City", state_id=self.state.id)
+        self.storage.new(self.state)
+        self.storage.new(self.city)
+        self.storage.save()
+
+    def tearDown(self):
+        # Remove test objects and file after testing
+        self.storage.delete(self.state)
+        self.storage.delete(self.city)
+        self.storage.save()
+
+    def test_get(self):
+        # Test retrieving an existing object
+        retrieved_state = self.storage.get(State, self.state.id)
+        self.assertEqual(retrieved_state, self.state)
+
+        # Test retrieving a non-existing object
+        non_existing_state = self.storage.get(State, "nonexistent_id")
+        self.assertIsNone(non_existing_state)
+
+    def test_count_all(self):
+        # Test counting all objects
+        count_all = self.storage.count()
+        self.assertEqual(count_all, 2)
+
+    def test_count_cls(self):
+        # Test counting objects of a specific class
+        count_state = self.storage.count(State)
+        self.assertEqual(count_state, 1)
