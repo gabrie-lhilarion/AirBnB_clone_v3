@@ -3,7 +3,6 @@
 Contains the class DBStorage
 """
 
-import models
 from models.amenity import Amenity
 from models.base_model import BaseModel, Base
 from models.city import City
@@ -12,9 +11,10 @@ from models.review import Review
 from models.state import State
 from models.user import User
 from os import getenv
-import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+Base = declarative_base()
 
 classes = {"Amenity": Amenity, "City": City,
            "Place": Place, "Review": Review, "State": State, "User": User}
@@ -39,6 +39,7 @@ class DBStorage:
                                              HBNB_MYSQL_DB))
         if HBNB_ENV == "test":
             Base.metadata.drop_all(self.__engine)
+        self.reload()
 
     def all(self, cls=None):
         """query on the current database session"""
