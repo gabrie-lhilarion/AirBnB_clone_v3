@@ -105,12 +105,12 @@ class TestDBStorage(unittest.TestCase):
         self.assertEqual(test_obj, retrieved_obj)
 
     def test_get_nonexistent(self):
-       
+
         retrieved_obj = self.storage.get(State, "nonexistent_id")
         self.assertIsNone(retrieved_obj)
 
     def test_count_all(self):
-      
+
         initial_count = self.storage.count()
         test_obj1 = State(name="Test State 1")
         test_obj2 = State(name="Test State 2")
@@ -121,7 +121,7 @@ class TestDBStorage(unittest.TestCase):
         self.assertEqual(final_count, initial_count + 2)
 
     def test_count_cls(self):
-       
+
         initial_count = self.storage.count(State)
         test_obj1 = State(name="Test State 1")
         test_obj2 = State(name="Test State 2")
